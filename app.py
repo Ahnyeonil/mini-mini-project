@@ -3,9 +3,21 @@
 from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
+from pymongo import MongoClient
+client = MongoClient('mongodb+srv://ahn:sparta@cluster0.s9tldtb.mongodb.net/Cluster0?retryWrites=true&w=majority')
+db = client.dbprestudy
+
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/new_member')
+def newMember_page():
+    return render_template('new_member.html')
 
 #@app.route("/mars", methods=["POST"])
 #def web_mars_post():
