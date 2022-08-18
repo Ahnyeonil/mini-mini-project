@@ -2,9 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Minimal</title>
+    <title>Minimal-project</title>
+
+    <script type="text/javascript">
+
+        /* 페이지 로딩시 실행 */
+        window.onload = function() {
+            console.log(document.getElementById("mid").value)
+            console.log(document.getElementById("member_id").value)
+        }
+
+        function logout(){
+            alert("로그아웃 되었습니다.")
+            location.href='logout'
+        }
+    </script>
 </head>
 <body>
-
+    {# session 값 저장 #}
+    {#
+    <input type="hidden" name="mid" id="mid" value="{{ session.mid }}">
+    <input type="hidden" name="member_id" id="member_id" value="{{ session.member_id }}">
+    #}
+    <input type="hidden" name="mid" id="mid" value="{{ loginMember.mid }}">
+    <input type="hidden" name="member_id" id="member_id" value="{{ loginMember.member_id }}">
+    <div class="container">
+        <h1>로그인 성공!</h1>
+        <button type="button" class="btn btn-secondary col-lg-2" onclick="logout()">로그아웃</button>
+    </div>
 </body>
 </html>
