@@ -29,16 +29,52 @@ function login() {
         data: {member_id: login_id, member_pw: login_pw},
         success: function (response) {
 
-            console.log(response)
+            console.log(response['sessionid'])
 
             let membername = response['member']
+            let sessionid = response['sessionid']
             let html_temp = `<div id="visit-comment">${membername}님 환영합니다</div>`
+            let html_temp_session = `<div id="visit-session">${sessionid}님이 세션에 접속중입니다</div>`
 
             if (response['msg'] === '로그인 완료!') {
+
                 loginBtnOut()
                 $('.form-group').hide()
                 alert(response['msg'])
                 $('#loginMember').prepend(html_temp)
+                $('#loginMember').append(html_temp_session)
+
+                // clock
+                let count = 10
+                const login_container = document.querySelector(".container")
+
+                let newDiv = document.createElement("div")
+                let newT = document.createTextNode(count.toString()+"초 후 세션이 종료됩니다")
+                newDiv.appendChild(newT)
+                newDiv.setAttribute("id", "clock")
+                login_container.insertBefore(newDiv, login_container.childNodes[0])
+                newDiv.style.color = "black"
+                newDiv.style.fontSize = "3em"
+                let clock = document.getElementById("clock");
+
+                let sessionClock = setInterval(timer,1000)
+
+                function timer() {
+                    count -= 1
+                    clock.textContent = `${count}초 후 세션이 종료됩니다`
+                    console.log(`session remaining seconds : ${count}`);
+
+                    if (count === 0) {
+                        clock.textContent = `세션이 종료 되었습니다. 3초 뒤 로그인 창으로 이동합니다.`;
+                            setTimeout(function(){
+                                clock.remove();
+                                location.replace('/login')
+                            },3000)
+                        clearInterval(sessionClock);
+                    }
+                }
+                // clock over
+
             }
             else {
                 loginBtnOn()
@@ -61,6 +97,7 @@ function logout() {
             loginBtnOn()
             $('.form-group').show()
             $('#visit-comment').remove()
+            $('#visit-session').remove()
         }
     })
 }
@@ -130,3 +167,4 @@ function signup() {
         }
     })
 }
+

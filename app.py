@@ -1,13 +1,21 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session
 from pymongo import MongoClient
+from datetime import timedelta
+from markupsafe import escape
 
 client = MongoClient('mongodb+srv://test:sparta@cluster0.38yzx.mongodb.net/Cluster0?retryWrites=true&w=majority')
 db = client.dbsparta
 app = Flask(__name__)
+app.secret_key = 'secretkeyQWER1234!@#$'
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=10)
 
 
 @app.route("/")
 def home():
+    if 'username' in session:  # session안에 username이 있으면 로그인
+        current_user = session['username']
+        return jsonify({'session_user': current_user})
+
     return render_template('index.html')
 
 
@@ -30,12 +38,15 @@ def do_login():
         return jsonify({'msg': '비밀 번호가 다릅니다'})
     else:
         user_name = db.members.find_one({'memberid': id_receive}, {'_id': False})['name']
-        return jsonify({'msg': '로그인 완료!', 'member': user_name})
+        print(session)
+        session['username'] = id_receive
+        return jsonify({'msg': '로그인 완료!', 'member': user_name, 'sessionid': session['username']})
 
 
 @app.route("/logout", methods=["GET"])
 def do_logout():
-    return jsonify({'msg': '로그 아웃 완료!'})
+    session.pop('username', None)
+    return jsonify({'msg': '세션이 종료 되었습니다!'})
 
 
 @app.route("/new_member")
