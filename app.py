@@ -59,7 +59,7 @@ def login():
 def doLogOut():
     session.pop('member_id', None)
     session.pop('mid', None)
-    return render_template('index.html')
+    return redirect('/')
 
 @app.route("/new_member", methods=["POST", "GET"])
 def newMember():
