@@ -1,9 +1,14 @@
 # 패키지 설치 -> flask, pymongo, dnspython
 
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, jsonify, redirect, session
+from datetime import timedelta
+
 app = Flask(__name__)
 
-app.secret_key = '1a2ss3ddd'
+# secret_key는 서버상에 동작하는 어플리케이션 구분
+app.secret_key = b'1a2ss3ddd'
+# 로그인 지속시간
+# app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=1)
 
 from pymongo import MongoClient
 client = MongoClient('mongodb+srv://ahn:sparta@cluster0.s9tldtb.mongodb.net/Cluster0?retryWrites=true&w=majority')
@@ -11,7 +16,18 @@ db = client.dbprestudy
 
 @app.route("/")
 def home():
+    # session안에 memberId 존재 확인
+    if 'member_id' in session:
+        # loginMember 에 담기
+        loginMember = session
+
+        return render_template('main.html', loginMember=loginMember)
+
     return render_template('index.html')
+
+@app.route("/main")
+def main():
+    return render_template('main.html')
 
 
 @app.route("/login", methods=["POST", "GET"])
@@ -20,30 +36,30 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
-        memberId = request.form['member_id']
-        memberPw = request.form['member_pw']
-
-        print(memberId, memberPw)
-
-        member = db.member.find_one({'memberId': request.form['member_id']})
-
-        print(member)
-
-
         # POST 방식이면 ID 먼저 확인
         if db.member.find_one({'memberId': request.form['member_id']}) is None:
             return jsonify({'msg': '일치하는 아이디가 없습니다!'})
         else:
-            pwd = db.member.find_one({'memberId': request.form['member_id']})["memberPw"]
-            # 잁치하는 ID가 존재할 경우 비밀번호 조회
+            loginMemberInfo = db.member.find_one({'memberId': request.form['member_id']})
+            pwd = loginMemberInfo["memberPw"]
+            # 일치하는 ID가 존재할 경우 비밀번호 조회
             if request.form['member_pw'] == pwd:
-                return jsonify({'msg': '로그인 완료!'})
+                # session 추가
+                session['member_id'] = request.form['member_id']
+                session['mid'] = loginMemberInfo['id']
+
+                loginMember = session
+
+                return render_template('/main.html', loginMember=loginMember)
+                # return jsonify({'msg': '로그인 완료!'})
             else:
                 return jsonify({'msg': '비밀번호가 일치하지 않습니다!'})
 
 @app.route("/logout")
 def doLogOut():
-    return jsonify({'msg': 'POST 연결 완료!'})
+    session.pop('member_id', None)
+    session.pop('mid', None)
+    return render_template('index.html')
 
 @app.route("/new_member", methods=["POST", "GET"])
 def newMember():
