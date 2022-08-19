@@ -57,6 +57,7 @@ def login():
 
 @app.route("/logout")
 def doLogOut():
+    # session 제거
     session.pop('member_id', None)
     session.pop('mid', None)
     return redirect('/')
