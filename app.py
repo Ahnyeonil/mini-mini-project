@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from datetime import timedelta
 from markupsafe import escape
 
-client = MongoClient('mongodb+srv://test:sparta@cluster0.38yzx.mongodb.net/Cluster0?retryWrites=true&w=majority')
+client = MongoClient('')
 db = client.dbsparta
 app = Flask(__name__)
 app.secret_key = 'secretkey'
