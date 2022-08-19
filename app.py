@@ -6,15 +6,15 @@ from markupsafe import escape
 client = MongoClient('mongodb+srv://test:sparta@cluster0.38yzx.mongodb.net/Cluster0?retryWrites=true&w=majority')
 db = client.dbsparta
 app = Flask(__name__)
-app.secret_key = 'secretkeyQWER1234!@#$'
-app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=10)
+app.secret_key = 'secretkey'
+
+# app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=10)
 
 
 @app.route("/")
 def home():
     if 'username' in session:  # session안에 username이 있으면 로그인
-        current_user = session['username']
-        return jsonify({'session_user': current_user})
+        return render_template('index_login.html', current_user=session['username'])
 
     return render_template('index.html')
 
@@ -26,6 +26,9 @@ def login_page():
 
 @app.route("/login", methods=["POST"])
 def do_login():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(seconds=10)
+
     id_receive = request.form['member_id']
     pw_receive = request.form['member_pw']
 
@@ -46,6 +49,7 @@ def do_login():
 @app.route("/logout", methods=["GET"])
 def do_logout():
     session.pop('username', None)
+    app.permanent_session_lifetime = timedelta(seconds=0)
     return jsonify({'msg': '세션이 종료 되었습니다!'})
 
 
@@ -70,16 +74,13 @@ def sign_up():
 
     doc_id = doc['memberid']
     doc_nickname = doc['nickname']
+    mem_id = db.members.find_one({'memberid': doc_id}, {'_id': False})
+    mem_nickname = db.members.find_one({'nickname': doc_nickname}, {'_id': False})
 
-    members = list(db.members.find({}, {'_id': False}))
-
-    for mem in members:
-        mem_id = mem['memberid']
-        mem_nickname = mem['nickname']
-        if doc_id == mem_id:
-            return jsonify({'msg': '동일한 id가 존재합니다!'})
-        elif doc_nickname == mem_nickname:
-            return jsonify({'msg': '동일한 닉네임이 존재합니다!'})
+    if mem_id is not None:
+        return jsonify({'msg': '동일한 id가 존재합니다!'})
+    elif mem_nickname is not None:
+        return jsonify({'msg': '동일한 닉네임이 존재합니다!'})
 
     db.members.insert_one(doc)
     return jsonify({'msg': '회원 가입 완료!'})

@@ -1,3 +1,6 @@
+let intervalInterruptedStop = false;
+// 세션 interval 중단 트리거
+
 window.onload=function(){
     /* 페이지 로딩시 실행 */
 }
@@ -45,6 +48,7 @@ function login() {
                 $('#loginMember').append(html_temp_session)
 
                 // clock
+                intervalInterruptedStop = false
                 let count = 10
                 const login_container = document.querySelector(".container")
 
@@ -60,6 +64,11 @@ function login() {
                 let sessionClock = setInterval(timer,1000)
 
                 function timer() {
+                    if (intervalInterruptedStop === true){
+                        clock.remove();
+                        clearInterval(sessionClock);
+                    }
+
                     count -= 1
                     clock.textContent = `${count}초 후 세션이 종료됩니다`
                     console.log(`session remaining seconds : ${count}`);
@@ -68,7 +77,7 @@ function login() {
                         clock.textContent = `세션이 종료 되었습니다. 3초 뒤 로그인 창으로 이동합니다.`;
                             setTimeout(function(){
                                 clock.remove();
-                                location.replace('/login')
+                                logout();
                             },3000)
                         clearInterval(sessionClock);
                     }
@@ -98,6 +107,8 @@ function logout() {
             $('.form-group').show()
             $('#visit-comment').remove()
             $('#visit-session').remove()
+            $('#session-text').remove()
+            intervalInterruptedStop = true;
         }
     })
 }
