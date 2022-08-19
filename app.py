@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, session
 from pymongo import MongoClient
 from datetime import timedelta
 from markupsafe import escape
-
+# Db 주소 빼놓음
 client = MongoClient('')
 db = client.dbsparta
 app = Flask(__name__)
