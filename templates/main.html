@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <title>Minimal-project</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Jquery 제외 ajax 사용 위해.... -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="static/js/common.js"></script>
+
     <script type="text/javascript">
 
         /* 페이지 로딩시 실행 */
@@ -17,19 +26,26 @@
             alert("로그아웃 되었습니다.")
             location.href='logout'
         }
+
+        function update_member(){
+            location.href='update_member'
+        }
+
     </script>
 </head>
 <body>
-    <!--session 값 저장-->
-    <!--
-    <input type="hidden" name="mid" id="mid" value="{{ session.mid }}">
-    <input type="hidden" name="member_id" id="member_id" value="{{ session.member_id }}">
-    -->
-    <input type="hidden" name="mid" id="mid" value="{{ loginMember.mid }}">
-    <input type="hidden" name="member_id" id="member_id" value="{{ loginMember.member_id }}">
-    <div class="container">
-        <h1>로그인 성공!</h1>
-        <button type="button" class="btn btn-secondary col-lg-2" onclick="logout()">로그아웃</button>
-    </div>
+    <form role="form" id="aform" name="aform">
+        <!--session 값 저장-->
+        <!--
+        <input type="hidden" name="mid" id="mid" value="{{ session.mid }}">
+        <input type="hidden" name="member_id" id="member_id" value="{{ session.member_id }}">
+        -->
+        <input type="hidden" name="mid" id="mid" value="{{ loginMember.mid }}">
+        <input type="hidden" name="member_id" id="member_id" value="{{ loginMember.member_id }}">
+        <div class="container">
+            <h1>로그인 성공!</h1>
+            <button type="button" class="btn btn-secondary col-lg-2" onclick="logout()">로그아웃</button>
+        </div>
+    </form>
 </body>
 </html>
