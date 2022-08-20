@@ -1,0 +1,191 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #bdc3c7;
+  line-height: 1.5;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+#header {
+  background: #1e262d;
+  width: 100%;
+  position: fixed; 
+  min-width: 800px;
+  color: #fff;
+}
+#header:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+.search {
+  float: right;
+  padding: 30px;
+  margin-top: 1px;
+}
+.searchbar {
+  background-color: #1e262d;
+  color: #fff;
+  width: 120px;
+  border: none;
+  font-size: 1em;
+  margin-top: 2px;
+  padding-bottom: 5px;
+  border-bottom: whitesmoke solid 2px;
+}
+
+.searchbar::placeholder {
+  color: whitesmoke;
+  font: 1em;
+  transition: all 0.3;
+}
+
+.searchbar:focus {
+  width: 200px;
+  font-size: 1em;
+  transition: 0.3s;
+  outline: none;
+}
+
+.logo {
+  float: left;
+  padding: 26px 0 26px;
+}
+
+.logo a {
+  font-size: 28px;
+  display: block;
+  padding: 0 0 0 20px;
+}
+.logo a:hover {
+  color: #adbac6;
+}
+
+nav {
+  float: right;
+}
+nav > ul {
+  float: left;
+}
+nav li {
+  list-style: none;
+  float: left;
+}
+nav li a {
+  float: left;
+  padding: 35px;
+}
+nav li a:hover {
+  color: #adbac6;
+}
+
+/* 본문 시작 */
+main {
+  padding: 10px;
+  padding-top: 150px;
+  background-color: #adbac6;
+}
+
+.post {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 35px;
+  width: 900px;
+  display: flex;
+}
+.post:hover {
+  transform: translateX(7%);
+  transition: all 0.5s;
+}
+
+.post img {
+  margin: 20px;
+  width: 350px;
+}
+
+.post-desc {
+  color: #1e262d;
+  margin-top: 20px;
+  padding: 10px;
+  width: 100%;
+}
+
+.heart {
+  width: 120px;
+  height: 30px;
+  color: #f77;
+  text-align: right;
+  box-shadow: #1e262d;
+}
+
+/* 본문 끝 */
+
+/* 포스팅 시작 */
+.popup {
+  position: fixed;
+  width: 75%;
+  height: 75%;
+  padding: 25px;
+  max-width: 500px;
+  border-radius: 0.5em;
+  top: 50%;
+  left: 50%;
+  color: #000;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255,255,255,1);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .5s, visibility 0s linear .5s;
+  z-index: 1;
+}
+.popup:target {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+.popup .close {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  padding: 5px;
+  color: #000;
+  transition: color .3s;
+  font-size: 2em;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.popup .close:hover {
+  color: #f00;
+}
+.close-popup {
+  background-color: rgba(0,0,0,.7);
+  cursor: default;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s, visibility 0s linear .5s;
+}
+.popup:target + .close-popup {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+/* 포스팅 끝 */
