@@ -94,5 +94,43 @@ def newMember():
         print("---------- 회원가입 End ----------")
         return jsonify({'msg': '회원가입이 완료되었습니다.'})
 
+@app.route("/update_member", methods=["POST", "GET"])
+def updateMember():
+
+    # 현재 session 데이터 확인
+    memberSequence = request.form['mid']
+
+    memberInfo = db.member.find_one({'id': memberSequence})
+
+    # GET 방식이면 페이지 이동
+    if request.method == 'GET':
+
+        memberInfo = db.member.find_one({'id': memberSequence})
+
+        return render_template('update_member.html', memberInfo=memberInfo)
+    else:
+        print("---------- 회원정보수정 Start ----------")
+
+        memberPw = memberInfo['member_pw']
+        memberName = memberInfo['member_name']
+        memberNickname = memberInfo['member_nickname']
+
+        db.member.update_one({'id': memberSequence}, {'$set': {'memberPw': memberPw, 'memberName': memberName, 'memberNickname': memberNickname}})
+
+        print("---------- 회원정보수정 End ----------")
+        return jsonify({'msg': '회원수정이 완료되었습니다.'})
+
+@app.route("/delete_member", methods=["POST"])
+def deleteMember():
+
+    # 탈퇴 데이터 확인
+    print("---------- 회원탈퇴 Start ----------")
+
+    mid = request.form['mid']
+    db.users.delete_one({'id':mid})
+
+    print("---------- 회원탈퇴 End ----------")
+    return jsonify({'msg': '회원탈퇴가 정상적으로 이루어졌습니다.'})
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
