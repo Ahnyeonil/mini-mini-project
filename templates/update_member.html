@@ -14,9 +14,8 @@
     <script type="text/javascript" src="static/js/common.js"></script>
 
     <script type="text/javascript">
+        /* 회원 정보 수정 */
         function update_member(mid) {
-
-            let formData = new FormData();
 
             let memberId = document.getElementById('member_id').value
             let memberPw = document.getElementById('member_pw').value
@@ -37,9 +36,10 @@
         }
 
         function delete_member(mid){
+            /* 회원 탈퇴 */
+            /* confirm(true // false 반환) */
             if(confirm("탈퇴하시겠습니까?"))
             {
-
                 $.ajax({
                     type: 'POST',
                     url: '/delete_member',
@@ -56,6 +56,7 @@
         }
 
         function goMain(){
+            /* 뒤로가기 진행시 로그인 데이터 가지고 있지 않으므로 index 페이지로 이동 */
             window.location.href = '/'
         }
     </script>
