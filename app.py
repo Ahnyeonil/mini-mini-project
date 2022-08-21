@@ -96,24 +96,20 @@ def newMember():
 
 @app.route("/update_member", methods=["POST", "GET"])
 def updateMember():
-
     # 현재 session 데이터 확인
-    memberSequence = request.form['mid']
+    memberSequence = int(request.values['mid'])
 
     memberInfo = db.member.find_one({'id': memberSequence})
 
     # GET 방식이면 페이지 이동
     if request.method == 'GET':
-
-        memberInfo = db.member.find_one({'id': memberSequence})
-
         return render_template('update_member.html', memberInfo=memberInfo)
     else:
         print("---------- 회원정보수정 Start ----------")
 
-        memberPw = memberInfo['member_pw']
-        memberName = memberInfo['member_name']
-        memberNickname = memberInfo['member_nickname']
+        memberPw = request.form['member_pw']
+        memberName = request.form['member_name']
+        memberNickname = request.form['member_nickname']
 
         db.member.update_one({'id': memberSequence}, {'$set': {'memberPw': memberPw, 'memberName': memberName, 'memberNickname': memberNickname}})
 
@@ -126,8 +122,12 @@ def deleteMember():
     # 탈퇴 데이터 확인
     print("---------- 회원탈퇴 Start ----------")
 
-    mid = request.form['mid']
-    db.users.delete_one({'id':mid})
+    # session 제거
+    session.pop('member_id', None)
+    session.pop('mid', None)
+
+    mid = int(request.values['mid'])
+    db.member.delete_one({'id':mid})
 
     print("---------- 회원탈퇴 End ----------")
     return jsonify({'msg': '회원탈퇴가 정상적으로 이루어졌습니다.'})
