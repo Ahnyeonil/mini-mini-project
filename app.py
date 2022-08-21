@@ -14,6 +14,8 @@ from pymongo import MongoClient
 client = MongoClient('mongodb+srv://ahn:sparta@cluster0.s9tldtb.mongodb.net/Cluster0?retryWrites=true&w=majority')
 db = client.dbprestudy
 
+# ayi
+# 초기페이지 ( session 존재 하면 mian page, 그렇지 않으면 index page 이동)
 @app.route("/")
 def home():
     # session안에 memberId 존재 확인
@@ -25,11 +27,14 @@ def home():
 
     return render_template('index.html')
 
+# ayi
+# main page 이동
 @app.route("/main")
 def main():
     return render_template('main.html')
 
-
+# ayi
+# login GET 방식이면 login page, POST 방식이면 login 진행
 @app.route("/login", methods=["POST", "GET"])
 def login():
     # GET 방식이면 페이지 이동
@@ -55,6 +60,8 @@ def login():
             else:
                 return jsonify({'msg': '비밀번호가 일치하지 않습니다!'})
 
+# ayi
+# logout 진행, session 제거 및 index page 이동
 @app.route("/logout")
 def doLogOut():
     # session 제거
@@ -62,6 +69,8 @@ def doLogOut():
     session.pop('mid', None)
     return redirect('/')
 
+# ayi
+# 회원가입 GET 방식이면 new_member page 이동, POST 방식이면 회원가입(member 추가 및 login 페이지로 이동)
 @app.route("/new_member", methods=["POST", "GET"])
 def newMember():
     # GET 방식이면 페이지 이동
@@ -94,40 +103,45 @@ def newMember():
         print("---------- 회원가입 End ----------")
         return jsonify({'msg': '회원가입이 완료되었습니다.'})
 
+# ayi
+# 회원 수정 GET 방식이면 마이페이지 이동, POST 방식이면 회원 정보 수정
 @app.route("/update_member", methods=["POST", "GET"])
 def updateMember():
-
     # 현재 session 데이터 확인
-    memberSequence = request.form['mid']
+    # int 형 변환 필요
+    memberSequence = int(request.values['mid'])
 
     memberInfo = db.member.find_one({'id': memberSequence})
 
     # GET 방식이면 페이지 이동
     if request.method == 'GET':
-
-        memberInfo = db.member.find_one({'id': memberSequence})
-
         return render_template('update_member.html', memberInfo=memberInfo)
     else:
         print("---------- 회원정보수정 Start ----------")
 
-        memberPw = memberInfo['member_pw']
-        memberName = memberInfo['member_name']
-        memberNickname = memberInfo['member_nickname']
+        memberPw = request.form['member_pw']
+        memberName = request.form['member_name']
+        memberNickname = request.form['member_nickname']
 
         db.member.update_one({'id': memberSequence}, {'$set': {'memberPw': memberPw, 'memberName': memberName, 'memberNickname': memberNickname}})
 
         print("---------- 회원정보수정 End ----------")
         return jsonify({'msg': '회원수정이 완료되었습니다.'})
 
+# ayi
+# 회원 탈퇴 session 제거 및 해당 id 데이터 삭제
 @app.route("/delete_member", methods=["POST"])
 def deleteMember():
 
     # 탈퇴 데이터 확인
     print("---------- 회원탈퇴 Start ----------")
 
-    mid = request.form['mid']
-    db.users.delete_one({'id':mid})
+    # session 제거
+    session.pop('member_id', None)
+    session.pop('mid', None)
+
+    mid = int(request.values['mid'])
+    db.member.delete_one({'id':mid})
 
     print("---------- 회원탈퇴 End ----------")
     return jsonify({'msg': '회원탈퇴가 정상적으로 이루어졌습니다.'})

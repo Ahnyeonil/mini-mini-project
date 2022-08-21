@@ -14,6 +14,7 @@
     <script type="text/javascript" src="static/js/common.js"></script>
 
     <script type="text/javascript">
+        /* 회원 정보 수정 */
         function update_member(mid) {
 
             let memberId = document.getElementById('member_id').value
@@ -24,7 +25,7 @@
             $.ajax({
                 type: 'POST',
                 url: '/update_member',
-                data: { 'member_id': memberId, 'member_pw': memberPw, 'member_name': memberName, 'member_nickname': memberNickname },
+                data: { 'mid' : mid, 'member_id': memberId, 'member_pw': memberPw, 'member_name': memberName, 'member_nickname': memberNickname },
                 success: function (response) {
                     alert(response['msg'])
                     // update 후 새로고침
@@ -35,9 +36,10 @@
         }
 
         function delete_member(mid){
+            /* 회원 탈퇴 */
+            /* confirm(true // false 반환) */
             if(confirm("탈퇴하시겠습니까?"))
             {
-
                 $.ajax({
                     type: 'POST',
                     url: '/delete_member',
@@ -45,42 +47,49 @@
                     success: function (response) {
                         alert(response['msg'])
                         // delete 후 index
-                        window.location.href = 'index'
+                        window.location.href = '/'
                     }
                 })
             } else {
                 return
             }
         }
+
+        function goMain(){
+            /* 뒤로가기 진행시 로그인 데이터 가지고 있지 않으므로 index 페이지로 이동 */
+            window.location.href = '/'
+        }
     </script>
 </head>
 <body>
     <div class="container">
         <!-- id -->
-        <input type="hidden" name="mid" id="mid" value="{{ memberInfo.id }}">
-        <div class="form-group">
-            <label for="member_id">사용자Id</label>
-            <input type="text" id="member_id" name="member_id" class="form-control" placeholder="사용자 Id를 입력하세요." value="{{ memberInfo.memberId }}" readonly/>
-        </div>
-        <div class="form-group">
-            <label for="member_pw">비밀번호</label>
-            <input type="password" id="member_pw" name="member_pw" class="form-control" placeholder="비밀번호를 입력하세요." value="{{ memberInfo.memberPw }}"/>
-        </div>
-        <div class="form-group">
-            <label for="member_pw_">비밀번호 확인</label>
-            <input type="password" id="member_pw_" name="member_pw_" class="form-control" placeholder="위의 비밀번호와 동일한 비밀번호를 입력하세요." value="{{ memberInfo.memberPw }}"/>
-        </div>
-        <div class="form-group">
-            <label for="member_name">사용자 명</label>
-            <input type="text" id="member_name" name="member_name" class="form-control" placeholder="사용자 이름을 입력하세요." value="{{ memberInfo.memberName }}"/>
-        </div>
-        <div class="form-group">
-            <label for="member_nickname">닉네임</label>
-            <input type="text" id="member_nickname" name="member_nickname" class="form-control" placeholder="사용자 닉네임을 입력하세요." value="{{ memberInfo.memberNickname }}"/>
-        </div>
-        <button type="button" class="btn btn-primary mt-2" onclick="update_member({{ memberInfo.id }})">수정</button>
-        <button type="button" class="btn btn-warning mt-2" onclick="delete_member({{ memberInfo.id }})">탈퇴</button>
-        <button type="button" class="btn btn-secondary mt-2" onclick="goBack()">뒤로가기</button>
+        <form role="form" name="aform" id="aform">
+            <input type="hidden" name="mid" id="mid" value="{{ memberInfo.id }}">
+            <div class="form-group">
+                <label for="member_id">사용자Id</label>
+                <input type="text" id="member_id" name="member_id" class="form-control" placeholder="사용자 Id를 입력하세요." value="{{ memberInfo.memberId }}" readonly/>
+            </div>
+            <div class="form-group">
+                <label for="member_pw">비밀번호</label>
+                <input type="password" id="member_pw" name="member_pw" class="form-control" placeholder="비밀번호를 입력하세요." value="{{ memberInfo.memberPw }}"/>
+            </div>
+            <div class="form-group">
+                <label for="member_pw_">비밀번호 확인</label>
+                <input type="password" id="member_pw_" name="member_pw_" class="form-control" placeholder="위의 비밀번호와 동일한 비밀번호를 입력하세요." value="{{ memberInfo.memberPw }}"/>
+            </div>
+            <div class="form-group">
+                <label for="member_name">사용자 명</label>
+                <input type="text" id="member_name" name="member_name" class="form-control" placeholder="사용자 이름을 입력하세요." value="{{ memberInfo.memberName }}"/>
+            </div>
+            <div class="form-group">
+                <label for="member_nickname">닉네임</label>
+                <input type="text" id="member_nickname" name="member_nickname" class="form-control" placeholder="사용자 닉네임을 입력하세요." value="{{ memberInfo.memberNickname }}"/>
+            </div>
+            <button type="button" class="btn btn-primary mt-2" onclick="update_member({{ memberInfo.id }})">수정</button>
+            <button type="button" class="btn btn-warning mt-2" onclick="delete_member({{ memberInfo.id }})">탈퇴</button>
+            <button type="button" class="btn btn-secondary mt-2" onclick="goMain()">메인으로</button>
+        </form>
     </div>
 </body>
 </html>

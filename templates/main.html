@@ -22,13 +22,13 @@
         }
 
         function logout(){
-            alert("main")
             alert("로그아웃 되었습니다.")
             location.href='logout'
         }
 
-        function update_member(){
-            location.href='update_member'
+        function update_member(mid){
+            /* 마이페이지 이동 ( id 값 전달 ) */
+            location.href='update_member?mid=' + mid
         }
 
     </script>
@@ -45,6 +45,7 @@
         <div class="container">
             <h1>로그인 성공!</h1>
             <button type="button" class="btn btn-secondary col-lg-2" onclick="logout()">로그아웃</button>
+            <button type="button" class="btn btn-primary col-lg-2" onclick="update_member({{ loginMember.mid }})">마이페이지</button>
         </div>
     </form>
 </body>
